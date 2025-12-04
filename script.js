@@ -120,10 +120,14 @@ function initEvents() {
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML = `
-      <h3>${event.name}</h3>
-      <p class="meta">${event.date} • ${event.time}</p>
-      <p class="meta">${event.venue}</p>
-      <p class="meta">${event.price}</p>
+      <div class="card-header">
+        <div>
+          <h3>${event.name}</h3>
+          <p class="meta">${event.date} • ${event.time}</p>
+          <p class="meta">${event.venue}</p>
+          <p class="meta">${event.price}</p>
+        </div>
+      </div>
       <form class="event-form" data-event="${event.id}">
         <label>Will you attend?</label>
         <select name="attendance" required>
@@ -140,7 +144,7 @@ function initEvents() {
         </select>
         <label>Notes (mobility aids, support needs)</label>
         <textarea name="notes" rows="2"></textarea>
-        <button type="submit" class="primary">Register</button>
+        <button type="submit" class="primary">Save</button>
       </form>
     `;
     list.appendChild(card);
@@ -160,6 +164,7 @@ function initServices() {
     `;
     list.appendChild(li);
   });
+  document.getElementById("stat-services").textContent = services.length;
 }
 
 function saveToLocalStorage(key, value) {
@@ -181,9 +186,9 @@ function handlePersonalForm() {
   const form = document.getElementById("personal-form");
   const statusEl = document.getElementById("personal-status");
   const saved = loadFromLocalStorage("personal", {});
-  form.livingArr = saved["living-arrangement"];
   if (saved["living-arrangement"]) {
     form.querySelector("#living-arrangement").value = saved["living-arrangement"];
+    document.getElementById("stat-profile").textContent = "Saved";
   }
   form.querySelector("#likes").value = saved.likes || "";
   form.querySelector("#background").value = saved.background || "";
@@ -198,31 +203,34 @@ function handlePersonalForm() {
       dislikes: form.querySelector("#dislikes").value,
     };
     saveToLocalStorage("personal", data);
-    statusEl.textContent = "Profile saved to this device.";
+    statusEl.textContent = "Profile saved";
+    document.getElementById("stat-profile").textContent = "Saved";
   });
 }
 
 function handleHomeSafetyForm() {
   const form = document.getElementById("home-safety");
   const statusEl = document.getElementById("home-status");
-  const saved = loadFromLocalStorage("home-safety", {});
+  const saved = loadFromLocalStorage("home", {});
   form.querySelector("#home-address").value = saved["home-address"] || "";
   form.querySelector("#stories").value = saved.stories || "";
   form.querySelector("#living-type").value = saved["living-type"] || "Independent house";
   form.querySelector("#features").value = saved.features || "";
+  if (saved["home-address"]) {
+    document.getElementById("stat-home").textContent = "Saved";
+  }
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const photoNames = Array.from(form.querySelector("#home-photos").files).map((file) => file.name);
     const data = {
       "home-address": form.querySelector("#home-address").value,
       stories: form.querySelector("#stories").value,
       "living-type": form.querySelector("#living-type").value,
       features: form.querySelector("#features").value,
-      photos: photoNames,
     };
-    saveToLocalStorage("home-safety", data);
-    statusEl.textContent = `Home safety saved. ${photoNames.length} photo(s) noted.`;
+    saveToLocalStorage("home", data);
+    statusEl.textContent = "Home safety saved";
+    document.getElementById("stat-home").textContent = "Saved";
   });
 }
 
@@ -234,79 +242,117 @@ function handleMedicalForm() {
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const files = Array.from(form.querySelector("#medical-files").files).map((file) => file.name);
-    const data = {
-      notes: form.querySelector("#medical-notes").value,
-      files,
-    };
+    const data = { notes: form.querySelector("#medical-notes").value };
     saveToLocalStorage("medical", data);
-    statusEl.textContent = `Medical update saved. ${files.length} attachment(s) noted.`;
-  });
-}
-
-function handleStatus() {
-  const saved = loadFromLocalStorage("status", "Participant");
-  statusDisplay.value = saved;
-  statusDisplay.addEventListener("change", () => {
-    saveToLocalStorage("status", statusDisplay.value);
-  });
-}
-
-function handleScrollButtons() {
-  document.querySelectorAll("[data-scroll-to]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = document.querySelector(button.dataset.scrollTo);
-      target?.scrollIntoView({ behavior: "smooth" });
-    });
+    statusEl.textContent = "Medical update saved";
   });
 }
 
 function handleEventForms() {
-  const registrations = loadFromLocalStorage("registrations", {});
-  updateRegistrations(registrations);
-
-  document.querySelectorAll(".event-form").forEach((form) => {
+  const savedRegistrations = loadFromLocalStorage("registrations", {});
+  const forms = document.querySelectorAll(".event-form");
+  forms.forEach((form) => {
+    const id = form.dataset.event;
+    if (savedRegistrations[id]) {
+      form.elements.attendance.value = savedRegistrations[id].attendance;
+      form.elements.transport.value = savedRegistrations[id].transport;
+      form.elements.notes.value = savedRegistrations[id].notes || "";
+    }
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      const id = form.dataset.event;
-      const attendance = form.querySelector("select[name='attendance']").value;
-      const transport = form.querySelector("select[name='transport']").value;
-      const notes = form.querySelector("textarea[name='notes']").value;
-      registrations[id] = { attendance, transport, notes };
-      saveToLocalStorage("registrations", registrations);
-      updateRegistrations(registrations);
+      const data = {
+        attendance: form.elements.attendance.value,
+        transport: form.elements.transport.value,
+        notes: form.elements.notes.value,
+        name: form.closest("article").querySelector("h3").textContent,
+      };
+      savedRegistrations[id] = data;
+      saveToLocalStorage("registrations", savedRegistrations);
+      renderRegistrationSummary(savedRegistrations);
     });
   });
 
-  document.getElementById("clear-registrations").addEventListener("click", () => {
-    Object.keys(registrations).forEach((key) => delete registrations[key]);
-    saveToLocalStorage("registrations", registrations);
-    updateRegistrations(registrations);
+  document
+    .getElementById("clear-registrations")
+    .addEventListener("click", () => {
+      localStorage.removeItem("registrations");
+      renderRegistrationSummary({});
+    });
+
+  renderRegistrationSummary(savedRegistrations);
+}
+
+function renderRegistrationSummary(registrations) {
+  const list = document.getElementById("registration-summary");
+  list.innerHTML = "";
+  const entries = Object.values(registrations);
+  document.getElementById("stat-events").textContent = entries.length;
+  if (!entries.length) {
+    const empty = document.createElement("li");
+    empty.textContent = "No registrations yet";
+    list.appendChild(empty);
+    return;
+  }
+  entries.forEach((entry) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${entry.name}</strong>
+      <p class="meta">${entry.attendance} • ${entry.transport}</p>
+      ${entry.notes ? `<p>${entry.notes}</p>` : ""}
+    `;
+    list.appendChild(li);
   });
 }
 
-function updateRegistrations(registrations) {
-  const summary = document.getElementById("registration-summary");
-  summary.innerHTML = "";
-  const entries = Object.entries(registrations);
-  if (!entries.length) {
-    const none = document.createElement("li");
-    none.textContent = "No registrations yet.";
-    summary.appendChild(none);
-    return;
-  }
+function handleStatus() {
+  const savedStatus = loadFromLocalStorage("customer-status", statusDisplay.value);
+  statusDisplay.value = savedStatus;
+  document.getElementById("status-display").textContent = savedStatus;
 
-  entries.forEach(([id, details]) => {
-    const event = events.find((e) => e.id === id);
-    const item = document.createElement("li");
-    item.innerHTML = `
-      <strong>${event?.name || id}</strong><br />
-      ${event?.date || "Date TBC"} at ${event?.time || "time TBC"}<br />
-      Status: ${details.attendance || "-"} | Transport: ${details.transport || "-"}<br />
-      Notes: ${details.notes || "None"}
-    `;
-    summary.appendChild(item);
+  statusDisplay.addEventListener("change", () => {
+    saveToLocalStorage("customer-status", statusDisplay.value);
+    document.getElementById("status-display").textContent = statusDisplay.value;
   });
+}
+
+function handleQuickScroll() {
+  document.querySelectorAll("[data-scroll-to]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = document.querySelector(button.dataset.scrollTo);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+}
+
+function handleTextSize() {
+  const slider = document.getElementById("text-size");
+  const root = document.documentElement;
+  const storedSize = loadFromLocalStorage("text-size", slider.value);
+  root.style.setProperty("--body-size", `${storedSize}px`);
+  slider.value = storedSize;
+
+  slider.addEventListener("input", () => {
+    root.style.setProperty("--body-size", `${slider.value}px`);
+    saveToLocalStorage("text-size", slider.value);
+  });
+}
+
+function handleSidebarHighlight() {
+  const links = document.querySelectorAll(".sidebar-link");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          links.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`));
+        }
+      });
+    },
+    { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+  );
+
+  document.querySelectorAll("main section").forEach((section) => observer.observe(section));
 }
 
 function init() {
@@ -317,9 +363,11 @@ function init() {
   handlePersonalForm();
   handleHomeSafetyForm();
   handleMedicalForm();
-  handleStatus();
-  handleScrollButtons();
   handleEventForms();
+  handleStatus();
+  handleQuickScroll();
+  handleTextSize();
+  handleSidebarHighlight();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+window.addEventListener("DOMContentLoaded", init);

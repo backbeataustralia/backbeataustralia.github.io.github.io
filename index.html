@@ -7,160 +7,217 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
+  <a class="skip-link" href="#overview">Skip to main content</a>
+  <header class="topbar" aria-label="Site header">
     <div class="brand">Suncare Customer Portal</div>
-    <nav aria-label="Main">
-      <a href="#overview">Overview</a>
-      <a href="#resources">Resources</a>
-      <a href="#faqs">FAQs</a>
-      <a href="#events">Events</a>
-      <a href="#profile">My Details</a>
-      <a href="#services">Services</a>
-    </nav>
+    <div class="top-actions">
+      <label class="inline" for="customer-status">Customer status</label>
+      <select id="customer-status" name="customer-status" aria-label="Set your status">
+        <option>Participant</option>
+        <option>Pending assessment</option>
+        <option>Pending funding</option>
+        <option>Fee-for-service</option>
+        <option>Funded – SAH Level 1</option>
+        <option>Funded – SAH Level 2</option>
+        <option>Funded – CHSP</option>
+        <option>Restorative Care Pathway</option>
+        <option>End of Life Pathway</option>
+      </select>
+    </div>
   </header>
 
-  <main>
-    <section id="overview" class="panel hero" aria-labelledby="hero-heading">
-      <div>
-        <h1 id="hero-heading">Welcome to your Suncare Customer Portal</h1>
-        <p class="lead">Easy, large-print access to everything you need: resources, events, personal information, and service schedules.</p>
-        <div class="status-box" aria-live="polite">
-          <label for="customer-status">Customer status</label>
-          <select id="customer-status" name="customer-status">
-            <option>Participant</option>
-            <option>Pending assessment</option>
-            <option>Pending funding</option>
-            <option>Fee-for-service</option>
-            <option>Funded – SAH Level 1</option>
-            <option>Funded – SAH Level 2</option>
-            <option>Funded – CHSP</option>
-            <option>Restorative Care Pathway</option>
-            <option>End of Life Pathway</option>
-          </select>
-          <p class="hint">This setting personalises the experience and can be updated anytime.</p>
-        </div>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <nav>
+        <a class="sidebar-link" href="#overview">Overview</a>
+        <a class="sidebar-link" href="#resources">Resources</a>
+        <a class="sidebar-link" href="#faqs">FAQs</a>
+        <a class="sidebar-link" href="#events">Events</a>
+        <a class="sidebar-link" href="#profile">My details</a>
+        <a class="sidebar-link" href="#medical-updates">Medical updates</a>
+        <a class="sidebar-link" href="#services">Service schedule</a>
+      </nav>
+      <div class="support-box">
+        <p class="strong">Need help?</p>
+        <p>Call <strong>1800 786 227</strong> or email <a href="mailto:support@suncare.org.au">support@suncare.org.au</a>.</p>
       </div>
-      <div class="quick-actions" aria-label="Quick actions">
-        <button class="primary" data-scroll-to="#events">Find an event</button>
-        <button class="secondary" data-scroll-to="#home-safety">Update my home safety</button>
-        <button class="secondary" data-scroll-to="#medical-updates">Share a medical update</button>
-      </div>
-    </section>
+    </aside>
 
-    <section id="resources" class="panel" aria-labelledby="resources-heading">
-      <header class="section-header">
-        <h2 id="resources-heading">Resources</h2>
-        <p>Access handbooks, guides, and other helpful documents.</p>
-      </header>
-      <div id="resource-list" class="card-grid" aria-live="polite"></div>
-    </section>
-
-    <section id="faqs" class="panel" aria-labelledby="faqs-heading">
-      <header class="section-header">
-        <h2 id="faqs-heading">Frequently Asked Questions</h2>
-        <p>Clear answers about My Aged Care, assessments, and getting the most out of Suncare.</p>
-      </header>
-      <div id="faq-list" class="accordion" aria-live="polite"></div>
-    </section>
-
-    <section id="events" class="panel" aria-labelledby="events-heading">
-      <header class="section-header">
+    <main>
+      <section id="overview" class="panel hero" aria-labelledby="hero-heading">
         <div>
-          <h2 id="events-heading">Events & Social Groups</h2>
-          <p>Join a social support group, attend a community event, and request transport.</p>
+          <p class="eyebrow">Older persons customer portal</p>
+          <h1 id="hero-heading">Welcome to Suncare</h1>
+          <p class="lead">Easy, large-print access to resources, events, personal information, and service schedules.</p>
+          <div class="status-box" aria-live="polite">
+            <p class="hint">This status personalises your view and can be updated anytime.</p>
+            <div class="status-pill" id="status-display" aria-live="polite"></div>
+          </div>
+          <div class="quick-actions" aria-label="Quick actions">
+            <button class="primary" data-scroll-to="#events">Find an event</button>
+            <button class="secondary" data-scroll-to="#home-safety">Update my home safety</button>
+            <button class="secondary" data-scroll-to="#medical-updates">Share a medical update</button>
+          </div>
         </div>
-        <button class="secondary" id="clear-registrations">Clear my registrations</button>
-      </header>
-      <div id="event-list" class="card-grid" aria-live="polite"></div>
-      <div class="registrations" aria-live="polite">
-        <h3>Your event registrations</h3>
-        <ul id="registration-summary" class="stacked-list"></ul>
-      </div>
-    </section>
+        <div class="dashboard" aria-label="At-a-glance summary">
+          <article class="stat-card" aria-live="polite">
+            <p class="label">Upcoming services</p>
+            <p class="value" id="stat-services">0</p>
+            <p class="hint">Scheduled visits this week</p>
+          </article>
+          <article class="stat-card" aria-live="polite">
+            <p class="label">Event spots saved</p>
+            <p class="value" id="stat-events">0</p>
+            <p class="hint">Registered or interested</p>
+          </article>
+          <article class="stat-card" aria-live="polite">
+            <p class="label">Profile saved</p>
+            <p class="value" id="stat-profile">Not yet</p>
+            <p class="hint">Living arrangement & interests</p>
+          </article>
+          <article class="stat-card" aria-live="polite">
+            <p class="label">Home safety</p>
+            <p class="value" id="stat-home">Not yet</p>
+            <p class="hint">Address, access, and photos</p>
+          </article>
+        </div>
+      </section>
 
-    <section id="profile" class="panel" aria-labelledby="profile-heading">
-      <header class="section-header">
-        <h2 id="profile-heading">Your profile</h2>
-        <p>Tell us about you and your home so we can tailor support.</p>
-      </header>
-      <div class="two-column">
-        <form id="personal-form" class="form-card" aria-labelledby="personal-heading">
-          <h3 id="personal-heading">About you</h3>
-          <label for="living-arrangement">Living arrangement</label>
-          <select id="living-arrangement" name="living-arrangement" required>
-            <option value="">Select</option>
-            <option>Living alone</option>
-            <option>Living with partner</option>
-            <option>Living with family</option>
-            <option>Community / unit living</option>
-          </select>
+      <section id="resources" class="panel" aria-labelledby="resources-heading">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Guides & downloads</p>
+            <h2 id="resources-heading">Resources</h2>
+            <p>Access handbooks, guides, and other helpful documents.</p>
+          </div>
+          <div class="section-actions">
+            <label class="inline" for="text-size">Text size</label>
+            <input id="text-size" type="range" min="16" max="22" step="1" value="18" aria-label="Adjust text size" />
+          </div>
+        </header>
+        <div id="resource-list" class="card-grid" aria-live="polite"></div>
+      </section>
 
-          <label for="likes">Likes & interests</label>
-          <textarea id="likes" name="likes" rows="3" placeholder="Books, music, hobbies"></textarea>
+      <section id="faqs" class="panel" aria-labelledby="faqs-heading">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Support</p>
+            <h2 id="faqs-heading">Frequently Asked Questions</h2>
+            <p>Clear answers about My Aged Care, assessments, and getting the most out of Suncare.</p>
+          </div>
+        </header>
+        <div id="faq-list" class="accordion" aria-live="polite"></div>
+      </section>
 
-          <label for="background">Your background</label>
-          <textarea id="background" name="background" rows="3" placeholder="A short story about you"></textarea>
+      <section id="events" class="panel" aria-labelledby="events-heading">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Social & community</p>
+            <h2 id="events-heading">Events & Social Groups</h2>
+            <p>Join a social support group, attend a community event, and request transport.</p>
+          </div>
+          <button class="secondary" id="clear-registrations">Clear my registrations</button>
+        </header>
+        <div id="event-list" class="card-grid" aria-live="polite"></div>
+        <div class="registrations" aria-live="polite">
+          <h3>Your event registrations</h3>
+          <ul id="registration-summary" class="stacked-list"></ul>
+        </div>
+      </section>
 
-          <label for="dislikes">Dislikes or sensitivities</label>
-          <textarea id="dislikes" name="dislikes" rows="3"></textarea>
+      <section id="profile" class="panel" aria-labelledby="profile-heading">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Personal details</p>
+            <h2 id="profile-heading">Your profile</h2>
+            <p>Tell us about you and your home so we can tailor support.</p>
+          </div>
+        </header>
+        <div class="two-column">
+          <form id="personal-form" class="form-card" aria-labelledby="personal-heading">
+            <h3 id="personal-heading">About you</h3>
+            <label for="living-arrangement">Living arrangement</label>
+            <select id="living-arrangement" name="living-arrangement" required>
+              <option value="">Select</option>
+              <option>Living alone</option>
+              <option>Living with partner</option>
+              <option>Living with family</option>
+              <option>Community / unit living</option>
+            </select>
 
-          <button class="primary" type="submit">Save profile</button>
-          <p class="form-status" aria-live="polite" id="personal-status"></p>
+            <label for="likes">Likes & interests</label>
+            <textarea id="likes" name="likes" rows="3" placeholder="Books, music, hobbies"></textarea>
+
+            <label for="background">Your background</label>
+            <textarea id="background" name="background" rows="3" placeholder="A short story about you"></textarea>
+
+            <label for="dislikes">Dislikes or sensitivities</label>
+            <textarea id="dislikes" name="dislikes" rows="3"></textarea>
+
+            <button class="primary" type="submit">Save profile</button>
+            <p class="form-status" aria-live="polite" id="personal-status"></p>
+          </form>
+
+          <form id="home-safety" class="form-card" aria-labelledby="home-safety-heading">
+            <h3 id="home-safety-heading">Home safety</h3>
+            <label for="home-address">Address</label>
+            <input id="home-address" name="home-address" type="text" required />
+
+            <label for="stories">Number of stories</label>
+            <input id="stories" name="stories" type="number" min="1" max="5" />
+
+            <label for="living-type">Home type</label>
+            <select id="living-type" name="living-type">
+              <option>Independent house</option>
+              <option>Unit / community living</option>
+              <option>Retirement village</option>
+            </select>
+
+            <label for="features">Ramps, stairs, gardens, kitchen & bathroom notes</label>
+            <textarea id="features" name="features" rows="4" placeholder="Stairs, railings, garden access, bathroom setup..."></textarea>
+
+            <label for="home-photos">Upload photos (home entry, bathroom, kitchen)</label>
+            <input id="home-photos" name="home-photos" type="file" accept="image/*" multiple />
+            <p class="hint">Photos stay on this device only and help your care team prepare.</p>
+
+            <button class="primary" type="submit">Save home safety</button>
+            <p class="form-status" aria-live="polite" id="home-status"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="medical-updates" class="panel" aria-labelledby="medical-heading">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Health & wellbeing</p>
+            <h2 id="medical-heading">Medical updates</h2>
+            <p>Share changes to medication, hospital discharge letters, or recent injuries.</p>
+          </div>
+        </header>
+        <form id="medical-form" class="form-card">
+          <label for="medical-notes">Updates</label>
+          <textarea id="medical-notes" name="medical-notes" rows="4" placeholder="New medications, changes, GP letters..."></textarea>
+
+          <label for="medical-files">Attach documents (GP letter, discharge notes)</label>
+          <input id="medical-files" name="medical-files" type="file" multiple />
+
+          <button class="primary" type="submit">Save medical update</button>
+          <p class="form-status" aria-live="polite" id="medical-status"></p>
         </form>
+      </section>
 
-        <form id="home-safety" class="form-card" aria-labelledby="home-safety-heading">
-          <h3 id="home-safety-heading">Home safety</h3>
-          <label for="home-address">Address</label>
-          <input id="home-address" name="home-address" type="text" required />
-
-          <label for="stories">Number of stories</label>
-          <input id="stories" name="stories" type="number" min="1" max="5" />
-
-          <label for="living-type">Home type</label>
-          <select id="living-type" name="living-type">
-            <option>Independent house</option>
-            <option>Unit / community living</option>
-            <option>Retirement village</option>
-          </select>
-
-          <label for="features">Ramps, stairs, gardens, kitchen & bathroom notes</label>
-          <textarea id="features" name="features" rows="4" placeholder="Stairs, railings, garden access, bathroom setup..." ></textarea>
-
-          <label for="home-photos">Upload photos (home entry, bathroom, kitchen)</label>
-          <input id="home-photos" name="home-photos" type="file" accept="image/*" multiple />
-          <p class="hint">Photos stay on this device only and help your care team prepare.</p>
-
-          <button class="primary" type="submit">Save home safety</button>
-          <p class="form-status" aria-live="polite" id="home-status"></p>
-        </form>
-      </div>
-    </section>
-
-    <section id="medical-updates" class="panel" aria-labelledby="medical-heading">
-      <header class="section-header">
-        <h2 id="medical-heading">Medical updates</h2>
-        <p>Share changes to medication, hospital discharge letters, or recent injuries.</p>
-      </header>
-      <form id="medical-form" class="form-card">
-        <label for="medical-notes">Updates</label>
-        <textarea id="medical-notes" name="medical-notes" rows="4" placeholder="New medications, changes, GP letters..."></textarea>
-
-        <label for="medical-files">Attach documents (GP letter, discharge notes)</label>
-        <input id="medical-files" name="medical-files" type="file" multiple />
-
-        <button class="primary" type="submit">Save medical update</button>
-        <p class="form-status" aria-live="polite" id="medical-status"></p>
-      </form>
-    </section>
-
-    <section id="services" class="panel" aria-labelledby="services-heading">
-      <header class="section-header">
-        <h2 id="services-heading">My service schedule</h2>
-        <p>See upcoming visits, the service type, and who will attend.</p>
-      </header>
-      <div id="service-list" class="stacked-list" aria-live="polite"></div>
-    </section>
-  </main>
+      <section id="services" class="panel" aria-labelledby="services-heading">
+        <header class="section-header">
+          <div>
+            <p class="eyebrow">Care visits</p>
+            <h2 id="services-heading">My service schedule</h2>
+            <p>See upcoming visits, the service type, and who will attend.</p>
+          </div>
+        </header>
+        <div id="service-list" class="stacked-list" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
 
   <footer class="panel footer">
     <p>Need help? Call <strong>1800 786 227</strong> or email <a href="mailto:support@suncare.org.au">support@suncare.org.au</a>.</p>

@@ -1,0 +1,274 @@
+:root {
+  color-scheme: light;
+  --primary: #005f8f;
+  --primary-soft: #e6f4ff;
+  --secondary: #004466;
+  --accent: #f7b500;
+  --bg: #f9fbfd;
+  --card: #ffffff;
+  --text: #123;
+  --muted: #4a5c6b;
+  --radius: 18px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+a {
+  color: var(--primary);
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.topbar nav {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.topbar a {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--secondary);
+}
+
+main {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: 18px 0;
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+  align-items: center;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--primary);
+}
+
+.lead {
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.status-box {
+  background: var(--primary-soft);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.status-box select {
+  font-size: 18px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #b5cee0;
+  width: 100%;
+}
+
+.quick-actions {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+}
+
+.button-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+button {
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button.primary {
+  background: var(--primary);
+  color: white;
+}
+
+button.secondary {
+  background: #e5edf5;
+  color: var(--secondary);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  border: 1px solid #dde7f0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.card .meta {
+  color: var(--muted);
+}
+
+.accordion details {
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1px solid #dde7f0;
+  padding: 14px 16px;
+}
+
+.accordion details + details {
+  margin-top: 10px;
+}
+
+.accordion summary {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg);
+  padding: 18px;
+  border-radius: var(--radius);
+  border: 1px solid #dde7f0;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+label {
+  font-weight: 700;
+}
+
+input,
+textarea,
+select {
+  font-size: 18px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #b5cee0;
+  background: white;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.hint {
+  color: var(--muted);
+  margin: 0;
+  font-size: 16px;
+}
+
+.form-status {
+  color: var(--secondary);
+  font-weight: 700;
+  margin: 4px 0 0;
+}
+
+.registrations {
+  margin-top: 16px;
+  background: var(--primary-soft);
+  padding: 16px;
+  border-radius: var(--radius);
+}
+
+.stacked-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stacked-list li {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #dde7f0;
+  margin-bottom: 10px;
+}
+
+.footer {
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (max-width: 800px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar nav {
+    gap: 10px;
+  }
+
+  body {
+    font-size: 17px;
+  }
+}
